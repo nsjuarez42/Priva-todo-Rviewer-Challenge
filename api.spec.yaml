@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: Privatodo API
+  description: |
+    Privatodo API is a REST API responsible for manage a list of task todo.
+  version: 1.0.0
+paths:
+  /task/{title}:
+    post:
+      summary: |
+        This endpoint creates a task for the given title.
+      parameters:
+        - name: title
+          description: The title of the task.
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskReq'
+      responses:
+        '201':
+          description: created
+        '409':
+          description: Already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid identifier.
+        '400':
+          description: Invalid body provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid body provided, check the payload.
+    patch:
+      summary: |
+        This endpoint mark as completed a task for the given title.
+      parameters:
+        - name: title
+          description: The title of the task.
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartReq'
+      responses:
+        '200':
+          description: created
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Task not found for the given title
+        '400':
+          description: Invalid body provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid body provided, check the payload.
+components:
+  schemas:
+    CreateTaskReq:
+      type: object
+      properties:
+        message:
+          type: string
+          required: true
+    CompleteTaskReq:
+      properties:
+        completed:
+          type: boolean
+          required: true
